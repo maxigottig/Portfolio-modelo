@@ -4,8 +4,27 @@ import { PORTFOLIO_DATA } from '../constants';
 
 const Skills: React.FC = () => {
   return (
-    <section id="skills" className="py-24 bg-transparent">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="skills" className="relative py-24 bg-transparent overflow-hidden">
+      {/* Dynamic Background System: Waves & Maximized Bubbles */}
+      <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden">
+        {/* Waves */}
+        <div className="absolute top-[-15%] left-[15%] w-[55rem] h-[55rem] bg-blue-500/10 dark:bg-blue-900/5 rounded-full blur-[150px] animate-wave-slow"></div>
+        <div className="absolute bottom-[-10%] right-[-5%] w-[45rem] h-[45rem] bg-indigo-500/10 dark:bg-indigo-900/5 rounded-full blur-[130px] animate-blob delay-1000"></div>
+
+        {/* Maximized Bubble Field */}
+        <div className="absolute top-1/4 right-[30%] w-12 h-12 bg-cyan-400/20 dark:bg-cyan-500/10 rounded-full blur-md animate-float"></div>
+        <div className="absolute bottom-1/4 left-[20%] w-16 h-16 bg-blue-300/30 dark:bg-blue-500/15 rounded-full blur-lg animate-float-slow delay-500"></div>
+        <div className="absolute top-1/2 left-[10%] w-7 h-7 bg-white/20 rounded-full blur-[2px] animate-float-fast delay-1000"></div>
+        <div className="absolute top-[10%] right-[15%] w-20 h-20 bg-indigo-300/15 dark:bg-indigo-700/5 rounded-full blur-2xl animate-float delay-1200"></div>
+        <div className="absolute bottom-[10%] right-[30%] w-8 h-8 bg-blue-500/20 rounded-full blur-sm animate-float-fast delay-[2s]"></div>
+        <div className="absolute top-[40%] left-[45%] w-5 h-5 bg-cyan-400/30 rounded-full blur-[1px] animate-float delay-[0.5s]"></div>
+        <div className="absolute bottom-[30%] left-[35%] w-10 h-10 bg-indigo-400/20 rounded-full blur-lg animate-float-slow delay-[1.5s]"></div>
+        <div className="absolute top-[60%] right-[10%] w-6 h-6 bg-white/30 rounded-full blur-[1px] animate-float delay-[3s]"></div>
+        <div className="absolute top-[5%] left-[5%] w-12 h-12 bg-blue-200/20 rounded-full blur-xl animate-float-slow"></div>
+        <div className="absolute bottom-[5%] right-[45%] w-4 h-4 bg-sky-300/40 rounded-full blur-sm animate-float-fast delay-100"></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <div className="relative order-2 lg:order-1">
              <div className="aspect-square max-w-md mx-auto rounded-[3rem] overflow-hidden shadow-2xl relative z-10 rotate-3">
@@ -16,6 +35,7 @@ const Skills: React.FC = () => {
                />
                <div className="absolute inset-0 bg-indigo-600/10 mix-blend-overlay"></div>
              </div>
+             {/* Localized Glow Effect */}
              <div className="absolute -top-10 -right-10 w-64 h-64 bg-indigo-600/5 dark:bg-indigo-400/10 rounded-full blur-3xl"></div>
           </div>
 

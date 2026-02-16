@@ -16,6 +16,11 @@
               'blob': 'blob 15s infinite ease-in-out',
               'blob-slow': 'blob 25s infinite ease-in-out',
               'blob-reverse': 'blob-reverse 20s infinite ease-in-out',
+              'wave': 'wave 12s infinite ease-in-out',
+              'wave-slow': 'wave 18s infinite ease-in-out',
+              'float': 'float 6s infinite ease-in-out',
+              'float-slow': 'float 10s infinite ease-in-out',
+              'float-fast': 'float 4s infinite ease-in-out',
             },
             keyframes: {
               fluid: {
@@ -31,6 +36,14 @@
                 '0%, 100%': { transform: 'translate(0px, 0px) scale(1)' },
                 '33%': { transform: 'translate(-120px, 120px) scale(1.3)' },
                 '66%': { transform: 'translate(120px, -80px) scale(0.9)' },
+              },
+              wave: {
+                '0%, 100%': { transform: 'translateX(-5%) translateY(0) scaleY(1)' },
+                '50%': { transform: 'translateX(5%) translateY(-20px) scaleY(1.1)' },
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0) translateX(0)' },
+                '50%': { transform: 'translateY(-20px) translateX(10px)' },
               }
             }
           }
