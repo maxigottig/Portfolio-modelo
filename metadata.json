@@ -1,0 +1,8 @@
+{
+  "name": "Professional AI Portfolio",
+  "description": "A high-end, responsive professional portfolio landing page featuring an AI-powered resume assistant, agency experience gallery, and project showcase.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
