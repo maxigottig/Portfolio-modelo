@@ -57,7 +57,7 @@ const Hero: React.FC = () => {
           </h1>
           
           <p className="text-xl lg:text-2xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-12 leading-relaxed font-medium">
-            Hola, soy {PORTFOLIO_DATA.name.split(' ')[0]}. {PORTFOLIO_DATA.title} con pasión por crear productos significativos y experiencias memorables.
+            Hola, soy Maxi Gottig. {PORTFOLIO_DATA.title} con pasión por crear productos significativos y experiencias memorables.
           </p>
           
           <div className="flex flex-col sm:flex-row justify-center items-center gap-6">

@@ -2,11 +2,11 @@
 import { ProfileData } from './types';
 
 export const PORTFOLIO_DATA: ProfileData = {
-  name: "Maximiliano Gottig",
+  name: "Maxi Gottig",
   title: "Senior Product Designer & Experience Lead",
   bio: "Especialista en Diseño de Producto y Liderazgo UX/UI con más de 8 años de trayectoria en agencias globales de primer nivel. Enfocado en crear soluciones digitales que equilibran las necesidades del negocio con experiencias de usuario excepcionales.",
   location: "Buenos Aires, Argentina",
-  email: "maximiliano.gottig@example.com",
+  email: "maxigottig1985@gmail.com",
   linkedin: "https://www.linkedin.com/in/maximiliano-gottig-504201129/",
   github: "https://github.com/maxigottig",
   skills: [

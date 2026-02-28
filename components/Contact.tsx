@@ -1,4 +1,5 @@
 import React from 'react';
+import { PORTFOLIO_DATA } from '../constants';
 
 const Contact: React.FC = () => {
   return (
@@ -11,7 +12,7 @@ const Contact: React.FC = () => {
             <div className="relative rounded-[2rem] overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl">
               <img 
                 src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop" 
-                alt="Maximiliano Gottig - Contact" 
+                alt={`${PORTFOLIO_DATA.name} - Contact`} 
                 className="w-full h-full object-cover transform group-hover:scale-105 transition duration-700"
                 referrerPolicy="no-referrer"
               />
@@ -78,7 +79,7 @@ const Contact: React.FC = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <span className="text-slate-600 dark:text-slate-400 font-medium">maxigottig1985@gmail.com</span>
+                <span className="text-slate-600 dark:text-slate-400 font-medium">{PORTFOLIO_DATA.email}</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-fuchsia-500/10 flex items-center justify-center text-fuchsia-500">

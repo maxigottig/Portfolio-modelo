@@ -2,18 +2,14 @@ import React, { useState, useRef } from 'react';
 
 const OfficeTour: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const togglePlay = () => {
-    if (videoRef.current) {
-      if (videoRef.current.paused) {
-        videoRef.current.play().catch(error => {
-          console.error("Video play failed:", error);
-        });
-      } else {
-        videoRef.current.pause();
-      }
-    }
+  // YouTube Video ID
+  const videoId = "oHSSnqyMXE0";
+
+  const onIframeLoad = () => {
+    setIsLoading(false);
   };
 
   return (
@@ -28,45 +24,34 @@ const OfficeTour: React.FC = () => {
           </p>
         </div>
 
-        <div 
-          className="relative group rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 aspect-video bg-slate-100 dark:bg-slate-900 cursor-pointer"
-          onClick={togglePlay}
-        >
-          {/* Video Overlay for aesthetic */}
-          <div className={`absolute inset-0 z-10 bg-black/20 transition-opacity duration-500 ${isPlaying ? 'opacity-0' : 'opacity-100'}`}></div>
-          
-          {/* Play Button Overlay */}
-          <div className={`absolute inset-0 z-20 flex items-center justify-center transition-all duration-500 ${isPlaying ? 'opacity-0 scale-150 pointer-events-none' : 'opacity-100 scale-100'}`}>
-            <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 shadow-2xl group-hover:scale-110 transition-transform">
-              <svg className="w-10 h-10 text-white fill-current ml-1" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
+        <div className="relative group rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 aspect-video bg-slate-900">
+          {/* Loading State */}
+          {isLoading && (
+            <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-900">
+              <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+              <p className="text-white text-sm font-medium animate-pulse">Cargando tour virtual...</p>
             </div>
-          </div>
+          )}
 
-          <video 
-            ref={videoRef}
-            loop 
-            muted 
-            playsInline
-            preload="auto"
+          {/* YouTube Embed */}
+          <iframe
+            ref={iframeRef}
             className="w-full h-full object-cover"
-            onPlay={() => setIsPlaying(true)}
-            onPause={() => setIsPlaying(false)}
-            crossOrigin="anonymous"
-            poster="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop"
-          >
-            <source 
-              src="https://player.vimeo.com/external/434045526.sd.mp4?s=c27db3449f61f01d106346c8e81d6f0600072bfa&profile_id=164&oauth2_token_id=57447761" 
-              type="video/mp4" 
-            />
-            Tu navegador no soporta el elemento de video.
-          </video>
+            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1&rel=0&showinfo=0`}
+            title="Nuestro Espacio de Trabajo"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            onLoad={onIframeLoad}
+          ></iframe>
+
+          {/* Aesthetic Overlay (Non-interactive to allow YouTube interaction if needed, or keep for style) */}
+          <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
 
           {/* Floating Label */}
           <div className="absolute bottom-8 left-8 z-20">
             <div className="glass-panel px-6 py-3 rounded-full flex items-center gap-3 border border-white/20">
-              <div className={`w-2 h-2 rounded-full ${isPlaying ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`}></div>
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
               <span className="text-sm font-medium text-white">Tour Virtual: Oficina Central</span>
             </div>
           </div>
