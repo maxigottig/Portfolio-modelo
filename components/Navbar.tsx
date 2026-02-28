@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 interface NavbarProps {
   isDark: boolean;
@@ -8,6 +8,41 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ isDark, toggleTheme }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    // Focus Music: Lofi Study track (Royalty Free)
+    // Using a more stable URL for the audio source
+    const audio = new Audio('https://www.chosic.com/wp-content/uploads/2021/04/And-So-It-Begins-Inspired-By-Lofi-Girl.mp3');
+    audio.loop = true;
+    audio.volume = 0.4;
+    
+    audio.addEventListener('error', (e) => {
+      console.error("Audio error details:", audio.error);
+    });
+
+    audioRef.current = audio;
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = ""; // Clear source to stop loading
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  const toggleMusic = () => {
+    if (!audioRef.current) return;
+
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play().catch(err => console.error("Audio play failed:", err));
+    }
+    setIsPlaying(!isPlaying);
+  };
 
   const navLinks = [
     { name: 'Inicio', href: '#home' },
@@ -27,7 +62,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDark, toggleTheme }) => {
             </span>
           </div>
           
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
             {navLinks.map((link) => (
               <a
                 key={link.name}
@@ -38,24 +73,66 @@ const Navbar: React.FC<NavbarProps> = ({ isDark, toggleTheme }) => {
               </a>
             ))}
             
+            <div className="flex items-center space-x-2 border-l border-slate-200 dark:border-slate-800 pl-6">
+              {/* Music Toggle */}
+              <button
+                onClick={toggleMusic}
+                className={`p-2 rounded-full transition-all duration-300 flex items-center gap-2 group ${isPlaying ? 'bg-indigo-500/10 text-indigo-500' : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'}`}
+                title={isPlaying ? "Pausar música" : "Reproducir música para concentrarse"}
+              >
+                <div className="relative w-5 h-5 flex items-center justify-center">
+                  {isPlaying ? (
+                    <div className="flex items-end gap-0.5 h-3">
+                      <div className="w-0.5 bg-current animate-[music-bar_0.8s_ease-in-out_infinite]"></div>
+                      <div className="w-0.5 bg-current animate-[music-bar_1.2s_ease-in-out_infinite]"></div>
+                      <div className="w-0.5 bg-current animate-[music-bar_1s_ease-in-out_infinite]"></div>
+                    </div>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                    </svg>
+                  )}
+                </div>
+                <span className="text-xs font-semibold uppercase tracking-wider hidden lg:block">
+                  {isPlaying ? 'Focus ON' : 'Focus Mode'}
+                </span>
+              </button>
+
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                aria-label="Toggle Theme"
+              >
+                {isDark ? (
+                  <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5 text-slate-700" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                  </svg>
+                )}
+              </button>
+            </div>
+          </div>
+
+          <div className="md:hidden flex items-center gap-2">
             <button
-              onClick={toggleTheme}
-              className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-              aria-label="Toggle Theme"
+              onClick={toggleMusic}
+              className={`p-2 rounded-full transition-all duration-300 ${isPlaying ? 'bg-indigo-500/10 text-indigo-500' : 'text-slate-600 dark:text-slate-400'}`}
             >
-              {isDark ? (
-                <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
-                </svg>
+              {isPlaying ? (
+                <div className="flex items-end gap-0.5 h-3">
+                  <div className="w-0.5 bg-current animate-[music-bar_0.8s_ease-in-out_infinite]"></div>
+                  <div className="w-0.5 bg-current animate-[music-bar_1.2s_ease-in-out_infinite]"></div>
+                  <div className="w-0.5 bg-current animate-[music-bar_1s_ease-in-out_infinite]"></div>
+                </div>
               ) : (
-                <svg className="w-5 h-5 text-slate-700" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                 </svg>
               )}
             </button>
-          </div>
-
-          <div className="md:hidden flex items-center gap-4">
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
