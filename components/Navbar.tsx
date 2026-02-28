@@ -9,39 +9,45 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ isDark, toggleTheme }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  useEffect(() => {
-    // Focus Music: Lofi Study track (Royalty Free)
-    // Using a more stable URL for the audio source
-    const audio = new Audio('https://www.chosic.com/wp-content/uploads/2021/04/And-So-It-Begins-Inspired-By-Lofi-Girl.mp3');
-    audio.loop = true;
-    audio.volume = 0.4;
-    
-    audio.addEventListener('error', (e) => {
-      console.error("Audio error details:", audio.error);
-    });
-
-    audioRef.current = audio;
-
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.src = ""; // Clear source to stop loading
-        audioRef.current = null;
-      }
-    };
-  }, []);
-
-  const toggleMusic = () => {
+  const toggleMusic = async () => {
     if (!audioRef.current) return;
-
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play().catch(err => console.error("Audio play failed:", err));
+    
+    try {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        setIsLoading(true);
+        // The browser requires a user gesture to play audio. 
+        // This click handler satisfies that.
+        await audioRef.current.play();
+        setIsPlaying(true);
+        setIsLoading(false);
+      }
+    } catch (err) {
+      console.error("Focus Mode failed:", err);
+      setIsPlaying(false);
+      setIsLoading(false);
+      
+      // If Suno fails, we try to reload with the fallback immediately
+      if (audioRef.current && !audioRef.current.src.includes('soundhelix')) {
+        console.log("Attempting fallback audio...");
+        audioRef.current.src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
+        audioRef.current.load();
+        audioRef.current.play()
+          .then(() => setIsPlaying(true))
+          .catch(e => console.error("All audio sources failed", e));
+      }
     }
-    setIsPlaying(!isPlaying);
+  };
+
+  const handleAudioError = () => {
+    console.error("Audio source error detected");
+    setIsLoading(false);
+    setIsPlaying(false);
   };
 
   const navLinks = [
@@ -55,6 +61,18 @@ const Navbar: React.FC<NavbarProps> = ({ isDark, toggleTheme }) => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-slate-200 dark:border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Hidden Audio Element */}
+        <audio 
+          ref={audioRef}
+          src="https://cdn1.suno.ai/sDtg6jnZFWobFK1b.mp3"
+          loop
+          onWaiting={() => setIsLoading(true)}
+          onPlaying={() => setIsLoading(false)}
+          onPause={() => setIsLoading(false)}
+          onCanPlayThrough={() => setIsLoading(false)}
+          onError={handleAudioError}
+          preload="none"
+        />
         <div className="flex justify-between h-16 items-center">
           <div className="flex-shrink-0 flex items-center">
             <span className="text-2xl font-bold text-gradient">
@@ -77,11 +95,14 @@ const Navbar: React.FC<NavbarProps> = ({ isDark, toggleTheme }) => {
               {/* Music Toggle */}
               <button
                 onClick={toggleMusic}
-                className={`p-2 rounded-full transition-all duration-300 flex items-center gap-2 group ${isPlaying ? 'bg-indigo-500/10 text-indigo-500' : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'}`}
+                disabled={isLoading}
+                className={`p-2 rounded-full transition-all duration-300 flex items-center gap-2 group ${isPlaying ? 'bg-indigo-500/10 text-indigo-500' : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'} ${isLoading ? 'opacity-50 cursor-wait' : ''}`}
                 title={isPlaying ? "Pausar música" : "Reproducir música para concentrarse"}
               >
                 <div className="relative w-5 h-5 flex items-center justify-center">
-                  {isPlaying ? (
+                  {isLoading ? (
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                  ) : isPlaying ? (
                     <div className="flex items-end gap-0.5 h-3">
                       <div className="w-0.5 bg-current animate-[music-bar_0.8s_ease-in-out_infinite]"></div>
                       <div className="w-0.5 bg-current animate-[music-bar_1.2s_ease-in-out_infinite]"></div>
@@ -94,7 +115,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDark, toggleTheme }) => {
                   )}
                 </div>
                 <span className="text-xs font-semibold uppercase tracking-wider hidden lg:block">
-                  {isPlaying ? 'Focus ON' : 'Focus Mode'}
+                  {isLoading ? 'Cargando...' : isPlaying ? 'Focus ON' : 'Focus Mode'}
                 </span>
               </button>
 
@@ -119,9 +140,12 @@ const Navbar: React.FC<NavbarProps> = ({ isDark, toggleTheme }) => {
           <div className="md:hidden flex items-center gap-2">
             <button
               onClick={toggleMusic}
-              className={`p-2 rounded-full transition-all duration-300 ${isPlaying ? 'bg-indigo-500/10 text-indigo-500' : 'text-slate-600 dark:text-slate-400'}`}
+              disabled={isLoading}
+              className={`p-2 rounded-full transition-all duration-300 ${isPlaying ? 'bg-indigo-500/10 text-indigo-500' : 'text-slate-600 dark:text-slate-400'} ${isLoading ? 'opacity-50' : ''}`}
             >
-              {isPlaying ? (
+              {isLoading ? (
+                <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+              ) : isPlaying ? (
                 <div className="flex items-end gap-0.5 h-3">
                   <div className="w-0.5 bg-current animate-[music-bar_0.8s_ease-in-out_infinite]"></div>
                   <div className="w-0.5 bg-current animate-[music-bar_1.2s_ease-in-out_infinite]"></div>
